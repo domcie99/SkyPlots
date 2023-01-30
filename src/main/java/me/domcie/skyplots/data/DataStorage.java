@@ -1,7 +1,6 @@
 package me.domcie.skyplots.data;
 
 import me.domcie.skyplots.SkyPlots;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.yaml.snakeyaml.Yaml;
@@ -21,7 +20,6 @@ public class DataStorage {
     public static List<IslandData> islands = new ArrayList<>();
 
     config cfg = config.getInst();
-    private Connection connection;
 
     public DataStorage() {
         String type = cfg.DataType;
@@ -38,7 +36,7 @@ public class DataStorage {
     public void initialize(){
         if (!saveToFile) {
             try {
-                connection = DriverManager.getConnection("jdbc:mysql://" + cfg.host + ":" + cfg.port + "/" + cfg.dbname, cfg.user, cfg.password);
+                Connection connection = DriverManager.getConnection("jdbc:mysql://" + cfg.host + ":" + cfg.port + "/" + cfg.dbname, cfg.user, cfg.password);
                 Statement statement = connection.createStatement();
                 statement.execute("CREATE TABLE IF NOT EXISTS islands (userId VARCHAR(36), islandLocation CHAR(255), members VARCHAR(36))");
                 statement.close();
@@ -47,7 +45,6 @@ public class DataStorage {
                 saveToFile = true;
             }
         } else {
-            saveToFile = true;
 
             File configFile = new File(SkyPlots.getInst().getDataFolder(), "skyblockdata.yml");
             if (!configFile.exists()) {
@@ -133,10 +130,12 @@ public class DataStorage {
             try {
                 mysqlConnection = DriverManager.getConnection(mysqlUrl, mysqlUsername, mysqlPassword);
                 for (IslandData island : islands) {
-                    PreparedStatement stmt = mysqlConnection.prepareStatement("INSERT INTO islands(userId, islandLocation, members) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM islands WHERE userId = ?);");
+                    PreparedStatement stmt = mysqlConnection.prepareStatement("INSERT INTO islands(userId, islandLocation, members) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE islandLocation = ?, members = ?");
                     stmt.setString(1, island.getUserId());
                     stmt.setString(2, island.getLocation().toString());
                     stmt.setString(3, String.join(";", island.getMembers()));
+                    stmt.setString(4, island.getLocation().toString());
+                    stmt.setString(5, String.join(";", island.getMembers()));
                     stmt.executeUpdate();
                 }
             } catch (SQLException e) {

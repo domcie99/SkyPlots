@@ -4,8 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import javax.xml.crypto.Data;
-import java.util.ArrayList;
 import java.util.List;
 
 public class IslandData {
@@ -86,12 +84,10 @@ public class IslandData {
 
     public static IslandData getIslandByLocation(Location location){
         for (IslandData island : DataStorage.islands) {
-            int dist = cfg.island_gap + cfg.island_size;
-            dist= dist;
-            location.setY(64);
-            Location loc = island.getLocation();
-            loc.setY(64);
-            if(loc.distanceSquared(location) < dist){
+            int halfSize = (cfg.island_size)/2;
+            Location islandLocation = island.getLocation();
+            if (Math.abs(location.getX() - islandLocation.getX()) < halfSize &&
+                    Math.abs(location.getZ() - islandLocation.getZ()) < halfSize) {
                 return island;
             }
         }

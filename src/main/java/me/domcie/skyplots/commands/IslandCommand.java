@@ -16,7 +16,6 @@ import me.domcie.skyplots.SkyPlots;
 import me.domcie.skyplots.data.DataStorage;
 import me.domcie.skyplots.data.IslandData;
 import me.domcie.skyplots.data.config;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -29,7 +28,6 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -46,18 +44,16 @@ public class IslandCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("This command can only be executed by a player.");
+            sender.sendMessage("§4This command can only be executed by a player.");
             return true;
         }
-        if(sender.hasPermission("skyplots.admin")) {
-            String usage = "§4Poprawne uzycie /schema [load|set] [spawn|island]";
-            if (args.length <= 1) {
-                sender.sendMessage(usage);
-                return true;
-            } else {
-                createIslandForPlayer(((Player) sender).getPlayer());
-            }
+
+        if (args.length == 1) {
+            createIslandForPlayer(((Player) sender).getPlayer());
             return true;
+        }
+        if (sender.hasPermission("skyplots.admin")) {
+            //String usage = "§4Poprawne uzycie /schema [load|set] [spawn|island]";
         }
         return true;
     }
@@ -74,7 +70,7 @@ public class IslandCommand implements CommandExecutor {
                 // Calculate the location of the new island
                 String worldName = cfg.island_world;
                 World world = Bukkit.getWorld(worldName);
-                Location islandLocation = new Location(world, 0, 64, 0);
+                Location islandLocation = new Location(world, 0.5, 64, 0.5);
 
                 int size = cfg.island_size;
                 int gap = cfg.island_gap;
@@ -87,8 +83,9 @@ public class IslandCommand implements CommandExecutor {
                     sum = sum*2 + 8;
                     ring = ring + 1;
                 }
-
-                islandLocation = generateIslandLocation(world, ring);
+                if(!IslandData.isIslandLocationAvailable(islandLocation)) {
+                    islandLocation = generateIslandLocation(world, ring);
+                }
 
                 if(IslandData.isIslandLocationAvailable(islandLocation)){
                     // Create the new island
@@ -105,6 +102,7 @@ public class IslandCommand implements CommandExecutor {
                         //If Pasting success add to database.
                         DataStorage.islands.add(island);
                         DataStorage.save();
+                        player.sendMessage("§6Stworzono Wyspę");
                         //player.teleport(islandLocation);
                     }
                 } else {
@@ -162,7 +160,7 @@ public class IslandCommand implements CommandExecutor {
         outer:
         for (int side = 0; side < 4; ++side) {
             for (int i = 1; i < w; ++i) {
-                Location islandLocation = new Location(world, x * RADIUS, 64, y * RADIUS);
+                Location islandLocation = new Location(world, x * RADIUS + 0.5, 64, y * RADIUS + 0.5);
 
                 // Check if island already exists at this location
                 if (IslandData.isIslandLocationAvailable(islandLocation)) {
