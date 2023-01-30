@@ -129,6 +129,8 @@ public class DataStorage {
         } else {
             try {
                 mysqlConnection = DriverManager.getConnection(mysqlUrl, mysqlUsername, mysqlPassword);
+                PreparedStatement clearStmt = mysqlConnection.prepareStatement("DELETE FROM islands");
+                clearStmt.executeUpdate();
                 for (IslandData island : islands) {
                     PreparedStatement stmt = mysqlConnection.prepareStatement("INSERT INTO islands(userId, islandLocation, members) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE islandLocation = ?, members = ?");
                     stmt.setString(1, island.getUserId());
@@ -143,42 +145,4 @@ public class DataStorage {
             }
         }
     }
-
-
-    public void delete(String userId) {
-        if (saveToFile) {
-            // delete data from file
-            try {
-                List<String> lines = new ArrayList<>();
-                BufferedReader br = new BufferedReader(new FileReader("skyblockdata.yml"));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    if (!line.startsWith(userId + ":")) {
-                        lines.add(line);
-                    }
-                }
-                BufferedWriter bw = new BufferedWriter(new FileWriter("skyblockdata.yml"));
-                for (String l : lines) {
-                    bw.write(l);
-                    bw.newLine();
-                }
-                bw.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            load();
-        } else {
-            // delete data from mysql
-            try {
-                mysqlConnection = DriverManager.getConnection(mysqlUrl, mysqlUsername, mysqlPassword);
-                PreparedStatement stmt = mysqlConnection.prepareStatement("DELETE FROM skyblockdata WHERE userId = ?");
-                stmt.setString(1, userId);
-                stmt.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            load();
-        }
-    }
-
 }

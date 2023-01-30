@@ -2,7 +2,9 @@ package me.domcie.skyplots.data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -82,6 +84,18 @@ public class IslandData {
         return null;
     }
 
+    public static IslandData getIslandByUUID(String uuid){
+        IslandData island;
+        island = getIslandByOwnerId(uuid);
+        if(island == null){
+            island = getIslandByMemberId(uuid);
+            if(island == null){
+                return null;
+            }
+        }
+        return island;
+    }
+
     public static IslandData getIslandByLocation(Location location){
         for (IslandData island : DataStorage.islands) {
             int halfSize = (cfg.island_size)/2;
@@ -99,6 +113,45 @@ public class IslandData {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public static void deleteIsland(IslandData island) {
+        teleportPlayersToSpawn(island);
+        clearIsland(island.islandLocation);
+        DataStorage.islands.remove(island);
+        DataStorage.save();
+    }
+    public static void teleportPlayersToSpawn(IslandData island) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Location playerLocation = player.getLocation();
+            int rad = (cfg.island_size)/2;
+            int dist = rad;
+            playerLocation.setY(64);
+            Location islandLocation = island.getLocation();
+            islandLocation.setY(64);
+            if (islandLocation.distance(playerLocation) < dist) {
+                player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+            }
+        }
+    }
+    public static void clearIsland(Location islandLocation) {
+        int islandSize = cfg.island_size;
+        int halfIslandSize = islandSize / 2;
+        int minX = islandLocation.getBlockX() - halfIslandSize;
+        int maxX = islandLocation.getBlockX() + halfIslandSize;
+        int minY = islandLocation.getBlockY();
+        int maxY = islandLocation.getBlockY() + islandSize;
+        int minZ = islandLocation.getBlockZ() - halfIslandSize;
+        int maxZ = islandLocation.getBlockZ() + halfIslandSize;
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    Location blockLocation = new Location(islandLocation.getWorld(), x, y, z);
+                    blockLocation.getBlock().setType(Material.AIR);
+                }
+            }
         }
     }
 }
