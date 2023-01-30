@@ -1,0 +1,13 @@
+database:
+  type: flat #FLAT / MYSQL
+
+  host: localhost # host of your database
+  port: 3306 # default port for MySQL
+  dbname: db # name of your database. A database server can contain multiple databases
+  user: root
+  password: root
+
+island:
+  world-name: SkyPlots
+  size: 50
+  gap: 5

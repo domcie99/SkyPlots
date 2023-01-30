@@ -1,0 +1,20 @@
+name: SkyPlots
+version: '${project.version}'
+main: me.domcie.skyplots.SkyPlots
+api-version: 1.19
+author: DomCie99
+
+commands:
+  test:
+    description: "Command test"
+  schema:
+    description: "Zapisanie schematu wyspy lub spawnu do folderu"
+    usage: "Usage: /schema [load|set] [spawn|island]"
+  island:
+    description: "Główna komenda"
+    usage: "Usage: /island"
+    aliases: [is, skyplots]
+
+permissions:
+  SkyPlots.admin:
+    default: op
