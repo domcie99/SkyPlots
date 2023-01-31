@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class IslandData {
-    private String userId;
+    private final String userId;
     private Location islandLocation;
     private List<String> members;
 
@@ -45,6 +45,14 @@ public class IslandData {
     public void removeMember(String member) {
         this.members.remove(member);
     }
+
+    public boolean isOwner(Player p){
+        return this.userId.equals(p.getUniqueId().toString());
+    }
+    public boolean isMember(Player p){
+        return this.members.contains(p.getUniqueId().toString());
+    }
+
     static config cfg = config.getInst();
 
     public static Location getBukkitLocation(String locationString) {
@@ -55,8 +63,7 @@ public class IslandData {
         float pitch = Float.parseFloat(locationString.substring(locationString.indexOf("pitch=") + "pitch=".length(), locationString.indexOf(",yaw=")));
         float yaw = Float.parseFloat(locationString.substring(locationString.indexOf("yaw=") + "yaw=".length(), locationString.length() - 1));
         World world = Bukkit.getWorld(worldName);
-        Location islandLocation = new Location(world, x, y, z, yaw, pitch);
-        return islandLocation;
+        return new Location(world, x, y, z, yaw, pitch);
     }
 
     public boolean hasPlayer(String playerId) {
@@ -83,15 +90,11 @@ public class IslandData {
         }
         return null;
     }
-
     public static IslandData getIslandByUUID(String uuid){
         IslandData island;
         island = getIslandByOwnerId(uuid);
         if(island == null){
             island = getIslandByMemberId(uuid);
-            if(island == null){
-                return null;
-            }
         }
         return island;
     }
@@ -109,11 +112,7 @@ public class IslandData {
     }
 
     public static boolean isIslandLocationAvailable(Location location){
-        if(getIslandByLocation(location)==null){
-            return true;
-        } else {
-            return false;
-        }
+        return getIslandByLocation(location) == null;
     }
 
     public static void deleteIsland(IslandData island) {
@@ -125,12 +124,10 @@ public class IslandData {
     public static void teleportPlayersToSpawn(IslandData island) {
         for (Player player : Bukkit.getOnlinePlayers()) {
             Location playerLocation = player.getLocation();
-            int rad = (cfg.island_size)/2;
-            int dist = rad;
-            playerLocation.setY(64);
+            int halfSize = (cfg.island_size)/2;
             Location islandLocation = island.getLocation();
-            islandLocation.setY(64);
-            if (islandLocation.distance(playerLocation) < dist) {
+            if (Math.abs(playerLocation.getX() - islandLocation.getX()) < halfSize &&
+                    Math.abs(playerLocation.getZ() - islandLocation.getZ()) < halfSize) {
                 player.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
             }
         }

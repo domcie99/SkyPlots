@@ -5,6 +5,7 @@ import me.domcie.skyplots.commands.schema;
 import me.domcie.skyplots.commands.test;
 import me.domcie.skyplots.data.DataStorage;
 import me.domcie.skyplots.data.config;
+import me.domcie.skyplots.listeners.PlayerListener;
 import me.domcie.skyplots.utils.EmptyChunkGenerator;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -35,6 +36,9 @@ public final class SkyPlots extends JavaPlugin {
         getCommand("schema").setExecutor(new schema(this));
 
         getCommand("island").setExecutor(new IslandCommand(this));
+
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+
         Bukkit.getConsoleSender().sendMessage("Test: "+config.getInst().island_world);
         // Plugin startup logic
 
