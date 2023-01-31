@@ -137,8 +137,8 @@ public class IslandData {
         int halfIslandSize = islandSize / 2;
         int minX = islandLocation.getBlockX() - halfIslandSize;
         int maxX = islandLocation.getBlockX() + halfIslandSize;
-        int minY = islandLocation.getBlockY();
-        int maxY = islandLocation.getBlockY() + islandSize;
+        int minY = 0;
+        int maxY = 255;
         int minZ = islandLocation.getBlockZ() - halfIslandSize;
         int maxZ = islandLocation.getBlockZ() + halfIslandSize;
 

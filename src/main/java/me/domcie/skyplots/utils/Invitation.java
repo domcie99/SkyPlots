@@ -47,18 +47,21 @@ public class Invitation {
         if (invitations.containsKey(playerId)) {
             invitations.get(playerId).cancel();
             invitations.remove(playerId);
-        }
-        if (invitation.containsKey(playerId)) {
-            Player owner = Bukkit.getPlayer(invitation.get(playerId).toString());
-            IslandData island = IslandData.getIslandByOwnerId(invitation.get(playerId).toString());
-            island.addMember(player.getUniqueId().toString());
 
-            if(owner.isOnline()){
-                owner.sendMessage("§6Player " + player.getName() + " accepted your invitation!");
+            if (invitation.containsKey(playerId)) {
+                Player owner = Bukkit.getPlayer(invitation.get(playerId).toString());
+                IslandData island = IslandData.getIslandByOwnerId(invitation.get(playerId).toString());
+                island.addMember(player.getUniqueId().toString());
+
+                if (owner.isOnline()) {
+                    owner.sendMessage("§6Player " + player.getName() + " accepted your invitation!");
+                }
+                invitation.remove(playerId);
             }
-            invitation.remove(playerId);
+            player.sendMessage("§6You have accepted the invitation and joined the island as a member.");
+        } else {
+            player.sendMessage("§4You don't have any pending invitation.");
         }
-        player.sendMessage("§6You have accepted the invitation and joined the island as a member.");
     }
 
     public static void decline(Player player) {
@@ -68,17 +71,20 @@ public class Invitation {
         if (invitations.containsKey(playerId)) {
             invitations.get(playerId).cancel();
             invitations.remove(playerId);
-        }
 
-        if (invitation.containsKey(playerId)) {
-            Player owner = Bukkit.getPlayer(invitation.get(playerId).toString());
-            if(owner.isOnline()){
-                owner.sendMessage("§4Player " + player.getName() + " declined your invitation!");
+
+            if (invitation.containsKey(playerId)) {
+                Player owner = Bukkit.getPlayer(invitation.get(playerId).toString());
+                if (owner.isOnline()) {
+                    owner.sendMessage("§4Player " + player.getName() + " declined your invitation!");
+                }
+                invitation.remove(playerId);
             }
-            invitation.remove(playerId);
-        }
 
-        player.sendMessage("§4You have declined the invitation.");
+            player.sendMessage("§4You have declined the invitation.");
+        } else {
+            player.sendMessage("§4You don't have any pending invitation.");
+        }
     }
 
     public static boolean hasPendingInvitation(Player p){

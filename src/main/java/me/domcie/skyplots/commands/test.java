@@ -1,7 +1,8 @@
 package me.domcie.skyplots.commands;
 
-import me.domcie.skyplots.data.IslandData;
 import me.domcie.skyplots.data.config;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,7 +25,7 @@ public class test implements CommandExecutor {
             return false;
         } else {
             Player p = (Player) sender;
-            p.sendMessage(IslandData.isIslandLocationAvailable(p.getLocation())+"");
+            p.teleport(new Location(Bukkit.getWorld(cfg.island_world),0,100,0));
             return false;
         }
     }

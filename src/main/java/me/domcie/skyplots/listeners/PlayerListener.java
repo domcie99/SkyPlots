@@ -14,8 +14,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.Objects;
-
 public class PlayerListener implements Listener {
 
     @EventHandler
@@ -52,7 +50,10 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        World ew = Objects.requireNonNull(event.getClickedBlock()).getWorld();
+        if(event.getClickedBlock() == null) {
+            return;
+        }
+        World ew = event.getClickedBlock().getWorld();
         World iw = Bukkit.getWorld(config.getInst().island_world);
         if(ew.equals(iw)) {
             Player player = event.getPlayer();

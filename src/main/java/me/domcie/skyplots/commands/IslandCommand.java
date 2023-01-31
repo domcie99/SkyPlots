@@ -50,9 +50,23 @@ public class IslandCommand implements CommandExecutor {
         }
         Player p = ((Player) sender).getPlayer();
         if (args.length < 1) {
-            p.sendMessage("");
+            p.sendMessage("§f---------§6SkyPlots§f---------");
+            p.sendMessage("§f| §6/is create             ");
+            p.sendMessage("§f| §6/is home               ");
+
+            if(sender.hasPermission("skyplots.admin")) {
+                p.sendMessage("§f| §6/is delete <player | UUID>");
+            } else {
+                p.sendMessage("§f| §6/is delete");
+            }
+
+            p.sendMessage("§f| §6/is invite <player>    ");
+            p.sendMessage("§f| §6/is accept             ");
+            p.sendMessage("§f| §6/is decline            ");
+            p.sendMessage("§f--§f-----------------------");
+
             return true;
-        } if (args.length == 1) {
+        } else if (args.length <= 2) {
             if (args[0].equalsIgnoreCase("home")) {
                 IslandData is = IslandData.getIslandByUUID(p.getUniqueId().toString());
                 if(is == null){
@@ -62,8 +76,7 @@ public class IslandCommand implements CommandExecutor {
                     p.sendMessage("§6Teleporting");
                     p.teleport(is.getLocation());
                 }
-            }
-            if (args[0].equalsIgnoreCase("create")) {
+            } else if (args[0].equalsIgnoreCase("create")) {
                 IslandData is = IslandData.getIslandByUUID(p.getUniqueId().toString());
                 if(is != null){
                     p.sendMessage("§4You are part of an island. Use /is home to teleport");
@@ -72,8 +85,58 @@ public class IslandCommand implements CommandExecutor {
                     p.sendMessage("§6Creating Island...");
                     createIslandForPlayer(p);
                 }
-            }
-            if (args[0].equalsIgnoreCase("delete")) {
+            } else if (args[0].equalsIgnoreCase("accept")) {
+
+                Invitation.accept(p);
+
+            } else if (args[0].equalsIgnoreCase("decline")) {
+
+                Invitation.decline(p);
+
+            } else if (args[0].equalsIgnoreCase("invite")) {
+                if (args.length == 2 && !args[1].isEmpty()) {
+                    IslandData is = IslandData.getIslandByOwnerId(p.getUniqueId().toString());
+                    if(is == null){
+                        p.sendMessage("§4You are not owner of any island!");
+                        return true;
+                    } else {
+                        Player p2 = Bukkit.getPlayer(args[1]);
+                        if(p2 != null && p2.isOnline() && !p.equals(p2)){
+                            if (Invitation.hasPendingInvitation(p2)) {
+                                p.sendMessage("§4Player has pending Invitation!");
+                            } else {
+                                Invitation.invite(p, p2);
+                            }
+                        } else {
+                            p.sendMessage("§4Player is not Online!");
+                        }
+                    }
+                } else {
+                    p.sendMessage("§4Usage /is invite <player>!");
+                }
+            } else if (args[0].equalsIgnoreCase("delete")) {
+                if(args.length == 2) {
+                    if (!args[1].isEmpty()) {
+                        if (sender.hasPermission("skyplots.admin")) {
+                            Player p2 = Bukkit.getPlayer(args[1]);
+                            IslandData is;
+                            if (p2 != null && p2.isOnline()) {
+                                is = IslandData.getIslandByOwnerId(p2.getUniqueId().toString());
+                            } else {
+                                p.sendMessage("§4Player is not Online! Checking by UUID...");
+                                is = IslandData.getIslandByOwnerId(args[1]);
+                            }
+                            if (is == null) {
+                                p.sendMessage("§4Could not find Island to delete!");
+                            } else {
+                                IslandData.deleteIsland(is);
+                            }
+                        } else {
+                            p.sendMessage("§4You don't have permissions to do that!");
+                        }
+                        return true;
+                    }
+                }
                 IslandData is = IslandData.getIslandByOwnerId(p.getUniqueId().toString());
                 if(is == null){
                     p.sendMessage("§4You are not owner of any island!");
@@ -82,51 +145,11 @@ public class IslandCommand implements CommandExecutor {
                     p.sendMessage("§6Deleting Island...");
                     IslandData.deleteIsland(is);
                 }
-            }
-
-            if (args[0].equalsIgnoreCase("accept")) {
-                Invitation.accept(p);
-            }
-            if (args[0].equalsIgnoreCase("decline")) {
-                Invitation.decline(p);
+            } else {
+                p.performCommand("is");
             }
         } else {
-            if (args[0].equalsIgnoreCase("invite")) {
-                if (!args[1].isEmpty()) {
-                    Player p2 = Bukkit.getPlayer(args[1]);
-                    if(p2 != null && p2.isOnline()){
-                        if (Invitation.hasPendingInvitation(p2)) {
-                            p.sendMessage("§4Player has pending Invitation!");
-                        } else {
-                            Invitation.invite(p, p2);
-                        }
-                    } else {
-                        p.sendMessage("§4Player is not Online!");
-                    }
-
-                }
-            }
-            if (args[0].equalsIgnoreCase("delete")) {
-                if (!args[1].isEmpty()) {
-                    if(sender.hasPermission("skyplots.admin")) {
-                        Player p2 = Bukkit.getPlayer(args[1]);
-                        IslandData is;
-                        if (p2 != null && p2.isOnline()) {
-                            is = IslandData.getIslandByOwnerId(p2.getUniqueId().toString());
-                        } else {
-                            p.sendMessage("§4Player is not Online! Checking by UUID...");
-                            is = IslandData.getIslandByOwnerId(args[1]);
-                        }
-                        if(is==null){
-                            p.sendMessage("§4Could not find Island to delete!");
-                        } else {
-                            IslandData.deleteIsland(is);
-                        }
-                    } else {
-                        p.sendMessage("§4You don't have permissions to do that!");
-                    }
-                }
-            }
+            p.performCommand("is");
         }
 
         return true;
