@@ -22,6 +22,9 @@ public class PlayerListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if(event.getBlock().getWorld().equals(Bukkit.getWorld(config.getInst().island_world))) {
             Player player = event.getPlayer();
+            if(player.hasPermission("SkyPlots.modify")){
+                return;
+            }
             Location blockLocation = event.getBlock().getLocation();
             IslandData island = IslandData.getIslandByLocation(blockLocation);
             if (island == null || (!island.isOwner(player) && !island.isMember(player))) {
@@ -35,6 +38,9 @@ public class PlayerListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         if(event.getBlock().getWorld().equals(Bukkit.getWorld(config.getInst().island_world))) {
             Player player = event.getPlayer();
+            if(player.hasPermission("SkyPlots.modify")){
+                return;
+            }
             Location blockLocation = event.getBlock().getLocation();
             IslandData island = IslandData.getIslandByLocation(blockLocation);
             if (island == null || (!island.isOwner(player) && !island.isMember(player))) {
@@ -50,6 +56,9 @@ public class PlayerListener implements Listener {
         World iw = Bukkit.getWorld(config.getInst().island_world);
         if(ew.equals(iw)) {
             Player player = event.getPlayer();
+            if(player.hasPermission("SkyPlots.modify")){
+                return;
+            }
             Block block = event.getClickedBlock();
             if (block == null) {
                 return;

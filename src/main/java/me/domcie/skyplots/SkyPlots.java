@@ -24,23 +24,24 @@ public final class SkyPlots extends JavaPlugin {
     @Override
     public void onEnable() {
         inst = this;
+        //Config Initialize
         saveDefaultConfig();
         config.getInst().load();
 
+        //Data Initialize
         dataStorage = new DataStorage();
         dataStorage.initialize();
 
+        //Generate World specified in config.
         generateWorld();
 
+        //Initialize commands
         getCommand("test").setExecutor(new test(this));
         getCommand("schema").setExecutor(new schema(this));
-
         getCommand("island").setExecutor(new IslandCommand(this));
 
+        //Initialize Listeners
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-
-        Bukkit.getConsoleSender().sendMessage("Test: "+config.getInst().island_world);
-        // Plugin startup logic
 
     }
 

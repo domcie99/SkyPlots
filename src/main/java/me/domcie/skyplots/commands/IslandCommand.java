@@ -16,6 +16,7 @@ import me.domcie.skyplots.SkyPlots;
 import me.domcie.skyplots.data.DataStorage;
 import me.domcie.skyplots.data.IslandData;
 import me.domcie.skyplots.data.config;
+import me.domcie.skyplots.utils.Invitation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -82,10 +83,26 @@ public class IslandCommand implements CommandExecutor {
                     IslandData.deleteIsland(is);
                 }
             }
+
+            if (args[0].equalsIgnoreCase("accept")) {
+                Invitation.accept(p);
+            }
+            if (args[0].equalsIgnoreCase("decline")) {
+                Invitation.decline(p);
+            }
         } else {
             if (args[0].equalsIgnoreCase("invite")) {
                 if (!args[1].isEmpty()) {
-                    //Invite Functions
+                    Player p2 = Bukkit.getPlayer(args[1]);
+                    if(p2 != null && p2.isOnline()){
+                        if (Invitation.hasPendingInvitation(p2)) {
+                            p.sendMessage("§4Player has pending Invitation!");
+                        } else {
+                            Invitation.invite(p, p2);
+                        }
+                    } else {
+                        p.sendMessage("§4Player is not Online!");
+                    }
 
                 }
             }
