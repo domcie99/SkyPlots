@@ -12,28 +12,30 @@ island:
   size: 50
   gap: 5
 
+
+#You can set all Messages Available in this plugin. For coloring chat you can use § or &.
 messages:
   playerGUI:
-    - "§f---------§6SkyPlots§f---------"
-    - "§f| §6/is create"
-    - "§f| §6/is home"
-    - "§f| §6/is delete"
-    - "§f| §6/is invite <player>"
-    - "§f| §6/is leave"
-    - "§f| §6/is accept"
-    - "§f| §6/is decline"
+    - "&f---------&6SkyPlots&f---------"
+    - "&f| &6/is create"
+    - "&f| &6/is home"
+    - "&f| &6/is delete"
+    - "&f| &6/is invite <player>"
+    - "&f| &6/is leave"
+    - "&f| &6/is accept"
+    - "&f| &6/is decline"
 
   adminGui:
-    - "§f---------§6SkyPlots-Admin§f---------"
-    - "§f| §6/is create"
-    - "§f| §6/is home"
-    - "§f| §6/is delete <player>"
-    - "§f| §6/is invite <player>"
-    - "§f| §6/is remove <player>"
-    - "§f| §6/is leave"
-    - "§f| §6/is accept"
-    - "§f| §6/is decline"
-    - "§f| §6/schm <save|paste>"
+    - "&f---------&6SkyPlots-Admin&f---------"
+    - "&f| &6/is create"
+    - "&f| &6/is home"
+    - "&f| &6/is delete <player>"
+    - "&f| &6/is invite <player>"
+    - "&f| &6/is remove <player>"
+    - "&f| &6/is leave"
+    - "&f| &6/is accept"
+    - "&f| &6/is decline"
+    - "&f| &6/schm <save|paste>"
 
   msg_player_only: "&cThis command can only be executed by a player."
   msg_player_offline: "&cPlayer is Offline"
@@ -79,10 +81,10 @@ messages:
   msg_invitation_send: "&aYou invited <player> to your island."
   msg_invitation_receive: "&aPlayer <player> has invited you to join their island. Type /is accept or /is decline to respond."
   msg_invitation_expired: "&cInvitation from <player> has expired."
-  msg_no_invitation: "§cYou don't have any pending invitation."
+  msg_no_invitation: "&cYou don't have any pending invitation."
 
   msg_invitation_accept: "&aYou have accepted the invitation. Use /is home to teleport to island"
-  msg_invitation_accepted: "§6Player <player> accepted your invitation!"
+  msg_invitation_accepted: "&6Player <player> accepted your invitation!"
 
   msg_invitation_decline: "&cYou have declined the invitation."
   msg_invitation_declined: "&cPlayer <player> declined your invitation!"

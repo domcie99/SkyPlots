@@ -7,7 +7,7 @@ author: DomCie99
 commands:
   test:
     description: "Command test"
-  schema:
+  schm:
     description: "Zapisanie schematu wyspy lub spawnu do folderu"
     usage: "Usage: /schema [load|set] [spawn|island]"
   island:
