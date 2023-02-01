@@ -76,7 +76,7 @@ public class SchematicManager {
             return true;
         }
 
-        player.sendMessage(cfg.msg_schematic_success);
+        player.sendMessage(cfg.msg_success);
         return true;
     }
 }
