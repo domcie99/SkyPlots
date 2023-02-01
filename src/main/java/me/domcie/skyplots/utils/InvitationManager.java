@@ -1,6 +1,8 @@
 package me.domcie.skyplots.utils;
 
+import me.domcie.skyplots.SkyPlots;
 import me.domcie.skyplots.data.IslandData;
+import me.domcie.skyplots.data.config;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -8,11 +10,12 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Invitation {
+public class InvitationManager {
 
     public static HashMap<UUID, BukkitTask> invitations = new HashMap<>();
     public static HashMap<UUID, UUID> invitation = new HashMap<>();
 
+    static config cfg = config.getInst();
     public static void invite(Player player1, Player player2) {
         UUID player2Id = player2.getUniqueId();
 
@@ -22,15 +25,15 @@ public class Invitation {
         }
 
         // Send confirmation to player 1
-        player1.sendMessage(String.format("§6You invited %s to your island.", player2.getName()));
+        player1.sendMessage(String.format(cfg.msg_invitation_send.replace("<player>", player2.getName())));
         // Send invitation message to player 2
-        player2.sendMessage(String.format("§6Player %s has invited you to join their island. Type /is accept or /is decline to respond.", player1.getName()));
+        player2.sendMessage(String.format(cfg.msg_invitation_receive.replace("<player>", player1.getName())));
 
         // Schedule a task to automatically decline the invitation after 20 seconds
-        BukkitTask task = Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("MyPlugin"), () -> {
+        BukkitTask task = Bukkit.getScheduler().runTaskLater(SkyPlots.getInst(), () -> {
             Player p = Bukkit.getPlayer(player2Id);
             if (p != null) {
-                p.sendMessage("§4Invitation from " + player1.getName() + " has expired.");
+                p.sendMessage(cfg.msg_invitation_expired.replace("<player>", player1.getName()));
             }
             invitations.remove(player2Id);
             invitation.remove(player1.getUniqueId());
@@ -54,13 +57,13 @@ public class Invitation {
                 island.addMember(player.getUniqueId().toString());
 
                 if (owner.isOnline()) {
-                    owner.sendMessage("§6Player " + player.getName() + " accepted your invitation!");
+                    owner.sendMessage(cfg.msg_invitation_accepted.replace("<player>", player.getName()));
                 }
                 invitation.remove(playerId);
             }
-            player.sendMessage("§6You have accepted the invitation and joined the island as a member.");
+            player.sendMessage(cfg.msg_invitation_accept);
         } else {
-            player.sendMessage("§4You don't have any pending invitation.");
+            player.sendMessage(cfg.msg_no_invitation);
         }
     }
 
@@ -76,14 +79,14 @@ public class Invitation {
             if (invitation.containsKey(playerId)) {
                 Player owner = Bukkit.getPlayer(invitation.get(playerId).toString());
                 if (owner.isOnline()) {
-                    owner.sendMessage("§4Player " + player.getName() + " declined your invitation!");
+                    owner.sendMessage(cfg.msg_invitation_declined.replace("<player>", player.getName()));
                 }
                 invitation.remove(playerId);
             }
 
-            player.sendMessage("§4You have declined the invitation.");
+            player.sendMessage(cfg.msg_invitation_decline);
         } else {
-            player.sendMessage("§4You don't have any pending invitation.");
+            player.sendMessage(cfg.msg_no_invitation);
         }
     }
 

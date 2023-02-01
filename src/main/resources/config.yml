@@ -11,3 +11,78 @@ island:
   world-name: SkyPlots
   size: 50
   gap: 5
+
+messages:
+  playerGUI:
+    - "§f---------§6SkyPlots§f---------"
+    - "§f| §6/is create"
+    - "§f| §6/is home"
+    - "§f| §6/is delete"
+    - "§f| §6/is invite <player>"
+    - "§f| §6/is leave"
+    - "§f| §6/is accept"
+    - "§f| §6/is decline"
+
+  adminGui:
+    - "§f---------§6SkyPlots-Admin§f---------"
+    - "§f| §6/is create"
+    - "§f| §6/is home"
+    - "§f| §6/is delete <player>"
+    - "§f| §6/is invite <player>"
+    - "§f| §6/is remove <player>"
+    - "§f| §6/is leave"
+    - "§f| §6/is accept"
+    - "§f| §6/is decline"
+    - "§f| §6/schm <save|paste>"
+
+  msg_player_only: "&cThis command can only be executed by a player."
+  msg_player_offline: "&cPlayer is Offline"
+  msg_player_null: "&cCould not find that player"
+  msg_no_permission: "&cYou don't have permission to do that"
+
+  msg_has_pending_invitation: "&cUser has pending Invitation!"
+
+  msg_create: "&aCreating Island!"
+  msg_created: "&aIsland Created!"
+  msg_teleport: "&aTeleporting..."
+  msg_usage: "&c Usage: &6<usage>"
+
+  msg_not_owner: "&cYou are not owner of any island!"
+  msg_player_not_owner: "&c<player> is not owner of any island!"
+
+  msg_not_member: "&cYou are not member of any island!"
+  msg_player_not_member: "&c<player> is not member of any island!"
+
+  msg_no_island: "&cYou don't have any island. Create one using /is create"
+  msg_has_island: "&cYou are part of an island. &aUse &6/is &ahome to teleport"
+
+  msg_no_location: "&cCould not find Available Location"
+
+  msg_no_schematic: "&cCould not load schematic."
+  msg_empty_clipboard: "&cClipboard is empty. &aUse //wand and //copy."
+  msg_error_saving: "&cCould not save schematic."
+  msg_error_pasting: "&cCould not paste schematic."
+  msg_success: "&aThe operation was successful."
+
+  msg_delete: "&cDeleting Island!"
+  msg_delete_sender: "&cDeleting Island of <player>!"
+  msg_delete_receiver: "&cYour island has been removed!"
+
+  msg_remove: "" #Not Used
+  msg_remove_sender: "&aRemoved <player> from island"
+  msg_remove_receiver: "&cYou got removed from <player> island"
+
+  msg_confirm: "" #Not Used
+  msg_confirm_send: "&aType command one more time to confirm in 20s."
+  msg_confirm_expired: "&cConfirmation expired"
+
+  msg_invitation_send: "&aYou invited <player> to your island."
+  msg_invitation_receive: "&aPlayer <player> has invited you to join their island. Type /is accept or /is decline to respond."
+  msg_invitation_expired: "&cInvitation from <player> has expired."
+  msg_no_invitation: "§cYou don't have any pending invitation."
+
+  msg_invitation_accept: "&aYou have accepted the invitation. Use /is home to teleport to island"
+  msg_invitation_accepted: "§6Player <player> accepted your invitation!"
+
+  msg_invitation_decline: "&cYou have declined the invitation."
+  msg_invitation_declined: "&cPlayer <player> declined your invitation!"

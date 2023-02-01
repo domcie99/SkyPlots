@@ -1,7 +1,7 @@
 package me.domcie.skyplots;
 
 import me.domcie.skyplots.commands.IslandCommand;
-import me.domcie.skyplots.commands.schema;
+import me.domcie.skyplots.commands.SchematicCommand;
 import me.domcie.skyplots.commands.test;
 import me.domcie.skyplots.data.DataStorage;
 import me.domcie.skyplots.data.config;
@@ -37,7 +37,7 @@ public final class SkyPlots extends JavaPlugin {
 
         //Initialize commands
         getCommand("test").setExecutor(new test(this));
-        getCommand("schema").setExecutor(new schema(this));
+        getCommand("schm").setExecutor(new SchematicCommand(this));
         getCommand("island").setExecutor(new IslandCommand(this));
 
         //Initialize Listeners

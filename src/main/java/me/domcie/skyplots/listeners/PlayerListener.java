@@ -25,7 +25,7 @@ public class PlayerListener implements Listener {
             }
             Location blockLocation = event.getBlock().getLocation();
             IslandData island = IslandData.getIslandByLocation(blockLocation);
-            if (island == null || (!island.isOwner(player) && !island.isMember(player))) {
+            if (island == null || !island.isOwner(player) || !island.isMember(player)) {
                 event.setCancelled(true);
                 player.sendMessage("You are not allowed to break blocks there.");
             }
@@ -41,7 +41,7 @@ public class PlayerListener implements Listener {
             }
             Location blockLocation = event.getBlock().getLocation();
             IslandData island = IslandData.getIslandByLocation(blockLocation);
-            if (island == null || (!island.isOwner(player) && !island.isMember(player))) {
+            if (island == null || !island.isOwner(player) || !island.isMember(player)) {
                 event.setCancelled(true);
                 player.sendMessage("You are not allowed to place blocks there.");
             }
