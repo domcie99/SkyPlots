@@ -75,7 +75,7 @@ public class config {
     public String msg_invitation_declined;
 
     public void reload(){
-        //plugin.reloadConfig();
+        SkyPlots.getInst().reloadConfig();
         load();
     }
     public void load(){

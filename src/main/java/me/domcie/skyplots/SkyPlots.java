@@ -47,7 +47,7 @@ public final class SkyPlots extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        //dataStorage.save();
+        dataStorage.save();
     }
 
     public void generateWorld(){

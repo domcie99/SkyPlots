@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PlayerListener implements Listener {
 
+    config cfg = config.getInst();
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if(event.getBlock().getWorld().equals(Bukkit.getWorld(config.getInst().island_world))) {
@@ -27,7 +28,7 @@ public class PlayerListener implements Listener {
             IslandData island = IslandData.getIslandByLocation(blockLocation);
             if (island == null || !island.isOwner(player) || !island.isMember(player)) {
                 event.setCancelled(true);
-                player.sendMessage("You are not allowed to break blocks there.");
+                player.sendMessage(cfg.msg_no_permission);
             }
         }
     }
@@ -43,7 +44,7 @@ public class PlayerListener implements Listener {
             IslandData island = IslandData.getIslandByLocation(blockLocation);
             if (island == null || !island.isOwner(player) || !island.isMember(player)) {
                 event.setCancelled(true);
-                player.sendMessage("You are not allowed to place blocks there.");
+                player.sendMessage(cfg.msg_no_permission);
             }
         }
     }
@@ -71,7 +72,7 @@ public class PlayerListener implements Listener {
                 blockType != Material.SPRUCE_DOOR && blockType != Material.STONE_BUTTON) {
                 if (island == null || !island.isMember(player) || !island.isOwner(player)) {
                     event.setCancelled(true);
-                    player.sendMessage("You are not allowed to interact with anything besides doors and buttons there.");
+                    player.sendMessage(cfg.msg_no_permission);
                 }
             }
         }

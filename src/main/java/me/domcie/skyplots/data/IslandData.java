@@ -13,6 +13,8 @@ public class IslandData {
     private Location islandLocation;
     private List<String> members;
 
+    static config cfg = config.getInst();
+
     public IslandData(String userId, Location islandLocation, List<String> members) {
         this.userId = userId;
         this.islandLocation = islandLocation;
@@ -52,8 +54,6 @@ public class IslandData {
     public boolean isMember(Player p){
         return this.members.contains(p.getUniqueId().toString());
     }
-
-    static config cfg = config.getInst();
 
     public static Location getBukkitLocation(String locationString) {
         String worldName = locationString.substring(locationString.indexOf("world=CraftWorld{name=") + "world=CraftWorld{name=".length(), locationString.indexOf("},x="));

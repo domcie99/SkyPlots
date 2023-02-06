@@ -18,3 +18,5 @@ commands:
 permissions:
   SkyPlots.admin:
     default: op
+  SkyPlots.modify:
+    default: op
