@@ -2,7 +2,6 @@ package me.domcie.skyplots;
 
 import me.domcie.skyplots.commands.IslandCommand;
 import me.domcie.skyplots.commands.SchematicCommand;
-import me.domcie.skyplots.commands.test;
 import me.domcie.skyplots.data.DataStorage;
 import me.domcie.skyplots.data.config;
 import me.domcie.skyplots.listeners.PlayerListener;
@@ -36,7 +35,6 @@ public final class SkyPlots extends JavaPlugin {
         generateWorld();
 
         //Initialize commands
-        getCommand("test").setExecutor(new test(this));
         getCommand("schm").setExecutor(new SchematicCommand(this));
         getCommand("island").setExecutor(new IslandCommand(this));
 
