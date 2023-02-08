@@ -12,6 +12,7 @@ public class ConfirmationManager {
 
     public static HashMap<UUID, String> confirmations = new HashMap<>();
     static config cfg = config.getInst();
+
     public static void SendConfirmation(Player p, String type){
         UUID uuid = p.getUniqueId();
         confirmations.remove(uuid);

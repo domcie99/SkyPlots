@@ -4,64 +4,59 @@ import me.domcie.skyplots.SkyPlots;
 import me.domcie.skyplots.data.IslandData;
 import me.domcie.skyplots.data.config;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class InvitationManager {
-
-    public static HashMap<UUID, BukkitTask> invitations = new HashMap<>();
-    public static HashMap<UUID, UUID> invitation = new HashMap<>();
-
+    public static HashMap<UUID, UUID> invitations = new HashMap<>();
     static config cfg = config.getInst();
-    public static void invite(Player player1, Player player2) {
-        UUID player2Id = player2.getUniqueId();
 
-        // Cancel any previous invitation tasks
-        if (invitations.containsKey(player2Id)) {
-            invitations.get(player2Id).cancel();
-        }
+    public static void sendInvitation(Player owner, Player invited){
+        UUID oid = owner.getUniqueId();
+        UUID iid = invited.getUniqueId();
+        invitations.remove(iid);
 
-        // Send confirmation to player 1
-        player1.sendMessage(String.format(cfg.msg_invitation_send.replace("<player>", player2.getName())));
-        // Send invitation message to player 2
-        player2.sendMessage(String.format(cfg.msg_invitation_receive.replace("<player>", player1.getName())));
+        owner.sendMessage(String.format(cfg.msg_invitation_send.replace("<player>", invited.getName())));
+        invited.sendMessage(String.format(cfg.msg_invitation_receive.replace("<player>", owner.getName())));
 
-        // Schedule a task to automatically decline the invitation after 20 seconds
-        BukkitTask task = Bukkit.getScheduler().runTaskLater(SkyPlots.getInst(), () -> {
-            Player p = Bukkit.getPlayer(player2Id);
-            if (p != null) {
-                p.sendMessage(cfg.msg_invitation_expired.replace("<player>", player1.getName()));
+
+        Bukkit.getScheduler().runTaskLater(SkyPlots.getInst(), () -> {
+            if (invitations.containsKey(iid)) {
+                invited.sendMessage(cfg.msg_invitation_expired.replace("<player>", owner.getName()));
+                invitations.remove(iid);
             }
-            invitations.remove(player2Id);
-            invitation.remove(player1.getUniqueId());
         }, 20 * 20);
 
-        invitation.put(player1.getUniqueId(), player2.getUniqueId());
-        invitations.put(player2Id, task);
+        invitations.put(iid, oid);
+    }
+
+    public static boolean hasPendingInvitation(Player p){
+        UUID uuid = p.getUniqueId();
+        if (invitations.containsKey(uuid)) {
+            return true;
+        }
+        return false;
     }
 
     public static void accept(Player player) {
         UUID playerId = player.getUniqueId();
 
-        // Cancel the invitation task
         if (invitations.containsKey(playerId)) {
-            invitations.get(playerId).cancel();
-            invitations.remove(playerId);
-
-            if (invitation.containsKey(playerId)) {
-                Player owner = Bukkit.getPlayer(invitation.get(playerId).toString());
-                IslandData island = IslandData.getIslandByOwnerId(invitation.get(playerId).toString());
+            OfflinePlayer owner = Bukkit.getOfflinePlayer(invitations.get(playerId).toString());
+            IslandData island = IslandData.getIslandByOwnerId(owner.getName());
+            if(island != null) {
                 island.addMember(player.getUniqueId().toString());
-
                 if (owner.isOnline()) {
-                    owner.sendMessage(cfg.msg_invitation_accepted.replace("<player>", player.getName()));
+                    owner.getPlayer().sendMessage(cfg.msg_invitation_accepted.replace("<player>", player.getName()));
                 }
-                invitation.remove(playerId);
+                invitations.remove(playerId);
+                player.sendMessage(cfg.msg_invitation_accept);
+            } else {
+                player.sendMessage(cfg.msg_player_not_owner.replace("<player>", owner.getName()));
             }
-            player.sendMessage(cfg.msg_invitation_accept);
         } else {
             player.sendMessage(cfg.msg_no_invitation);
         }
@@ -70,30 +65,15 @@ public class InvitationManager {
     public static void decline(Player player) {
         UUID playerId = player.getUniqueId();
 
-        // Cancel the invitation task
         if (invitations.containsKey(playerId)) {
-            invitations.get(playerId).cancel();
-            invitations.remove(playerId);
-
-
-            if (invitation.containsKey(playerId)) {
-                Player owner = Bukkit.getPlayer(invitation.get(playerId).toString());
-                if (owner.isOnline()) {
-                    owner.sendMessage(cfg.msg_invitation_declined.replace("<player>", player.getName()));
-                }
-                invitation.remove(playerId);
+            OfflinePlayer owner = Bukkit.getOfflinePlayer(invitations.get(playerId).toString());
+            if (owner.isOnline()) {
+                owner.getPlayer().sendMessage(cfg.msg_invitation_declined.replace("<player>", player.getName()));
             }
-
+            invitations.remove(playerId);
             player.sendMessage(cfg.msg_invitation_decline);
         } else {
             player.sendMessage(cfg.msg_no_invitation);
         }
-    }
-
-    public static boolean hasPendingInvitation(Player p){
-        if (invitations.containsKey(p.getUniqueId())) {
-            return true;
-        }
-        return false;
     }
 }

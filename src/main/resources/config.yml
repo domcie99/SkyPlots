@@ -15,7 +15,7 @@ island:
 
 #You can set all Messages Available in this plugin. For coloring chat you can use § or &.
 messages:
-  playerGUI:
+  playerGui:
     - "&f---------&6SkyPlots&f---------"
     - "&f| &6/is create"
     - "&f| &6/is home"

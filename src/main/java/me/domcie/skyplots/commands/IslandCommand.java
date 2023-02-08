@@ -75,6 +75,10 @@ public class IslandCommand implements CommandExecutor {
 
                 removePlayer(p, args);
 
+            } else if(sender.hasPermission("skyplots.admin") && (args[0].equalsIgnoreCase("tp"))) {
+
+                p.teleport(new Location(Bukkit.getWorld(cfg.island_world), 0, 100, 0));
+
             } else {
                 p.performCommand("is");
             }
@@ -84,15 +88,16 @@ public class IslandCommand implements CommandExecutor {
 
         return true;
     }
-    public void teleportToIsland(Player p){
+    public boolean teleportToIsland(Player p){
         IslandData is = IslandData.getIslandByUUID(p.getUniqueId().toString());
         if(is != null){
             p.teleport(is.getLocation());
         } else {
             p.sendMessage(cfg.msg_no_island);
         }
+        return true;
     }
-    public void createIslandForPlayer(Player player) {
+    public boolean createIslandForPlayer(Player player) {
 
         UUID playerId = player.getUniqueId();
 
@@ -133,25 +138,26 @@ public class IslandCommand implements CommandExecutor {
 
                 if(IslandData.isIslandLocationAvailable(islandLocation)){
                     //Using randomUUID For testing purpose
-                    //island = new IslandData(playerId.toString(), islandLocation, new ArrayList<>());
-                    island = new IslandData(UUID.randomUUID().toString(), islandLocation, new ArrayList<>());
+                    island = new IslandData(playerId.toString(), islandLocation, new ArrayList<>());
+                   //island = new IslandData(UUID.randomUUID().toString(), islandLocation, new ArrayList<>());
 
                     // Paste Schematic - If Pasting success add to database.
                     if(SchematicManager.pasteSchematic(player, islandLocation)){
                         DataStorage.islands.add(island);
                         DataStorage.save();
                         player.sendMessage(cfg.msg_created);
-                        //player.teleport(islandLocation);
+                        player.teleport(islandLocation);
                     }
                 } else {
                     player.sendMessage(cfg.msg_no_location);
                 }
             } else {
-                player.sendMessage(cfg.msg_not_member);
+                player.sendMessage(cfg.msg_has_island);
             }
         } else {
-            player.sendMessage(cfg.msg_not_owner);
+            player.sendMessage(cfg.msg_has_island);
         }
+        return true;
     }
     public Location generateIslandLocation(World world, int ringCount) {
         int w = (ringCount * 2) - 1;
@@ -194,7 +200,7 @@ public class IslandCommand implements CommandExecutor {
                     if (InvitationManager.hasPendingInvitation(p2)) {
                         p.sendMessage(cfg.msg_has_pending_invitation);
                     } else {
-                        InvitationManager.invite(p, p2);
+                        InvitationManager.sendInvitation(p, p2);
                     }
                 } else {
                     p.sendMessage(cfg.msg_player_offline);
@@ -247,8 +253,13 @@ public class IslandCommand implements CommandExecutor {
                 p.sendMessage(cfg.msg_not_owner);
                 return true;
             } else {
-                p.sendMessage(cfg.msg_delete);
-                IslandData.deleteIsland(is);
+                if(ConfirmationManager.hasPendingConfirmation(p) != null) {
+                    p.sendMessage(cfg.msg_delete);
+                    IslandData.deleteIsland(is);
+                    ConfirmationManager.confirmations.remove(p.getUniqueId());
+                } else {
+                    ConfirmationManager.SendConfirmation(p, args[0]);
+                }
             }
             return false;
         }
@@ -257,30 +268,20 @@ public class IslandCommand implements CommandExecutor {
     boolean removePlayer(Player p, String[] args){
         if(args.length == 2) {
             OfflinePlayer p2 = Bukkit.getOfflinePlayer(args[1]);
-            IslandData is = IslandData.getIslandByOwnerId(p2.getUniqueId().toString());
-            if(is == null) {
-                if(p.hasPermission("skyplots.admin")){
-                    is = IslandData.getIslandByMemberId(p2.getUniqueId().toString());
-                    if(is == null){
-                        p.sendMessage(cfg.msg_player_not_member.replace("<player>", p2.getName()));
-                        return false;
-                    }
-                } else {
-                    p.sendMessage(cfg.msg_not_owner);
-                    return false;
-                }
-            }
-            if(is.getMembers().contains(p2.getUniqueId().toString())) {
-                if (ConfirmationManager.hasPendingConfirmation(p) != null && ConfirmationManager.confirmationCommand(p, args[1])) {
+            IslandData is = IslandData.getIslandByUUID(p2.getUniqueId().toString());
+
+            if(is != null){
+                if (is.getUserId().equals(p.getUniqueId().toString()) || p.hasPermission("skyplots.admin")) {
                     is.removeMember(p2.getUniqueId().toString());
                     p.sendMessage(cfg.msg_remove_sender.replace("<player>", p2.getName()));
                     if(p2.isOnline()) {
                         p2.getPlayer().sendMessage(cfg.msg_remove_receiver.replace("<player>", p.getName()));
                     }
+                    return true;
                 } else {
-                    ConfirmationManager.SendConfirmation(p, args[0]);
+                    p.sendMessage(cfg.msg_not_owner);
+                    return false;
                 }
-                return true;
             } else {
                 p.sendMessage(cfg.msg_player_not_member.replace("<player>", p2.getName()));
                 return false;

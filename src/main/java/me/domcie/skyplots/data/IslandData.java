@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IslandData {
@@ -18,7 +19,11 @@ public class IslandData {
     public IslandData(String userId, Location islandLocation, List<String> members) {
         this.userId = userId;
         this.islandLocation = islandLocation;
-        this.members = members;
+        if (members == null) {
+            this.members = new ArrayList<>();
+        } else {
+            this.members = new ArrayList<>(members);
+        }
     }
 
     public String getUserId() {
